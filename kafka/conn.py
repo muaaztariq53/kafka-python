@@ -13,6 +13,7 @@ except ImportError:
     # vendored backport module
     from kafka.vendor import selectors34 as selectors
 
+import sys
 import socket
 import struct
 import threading
@@ -417,6 +418,8 @@ class BrokerConnection(object):
             elif ret not in (errno.EINPROGRESS, errno.EALREADY, errno.EWOULDBLOCK, 10022):
                 log.error('Connect attempt to %s returned error %s.'
                           ' Disconnecting.', self, ret)
+                time.sleep(5)
+                sys.exit(1)
                 errstr = errno.errorcode.get(ret, 'UNKNOWN')
                 self.close(Errors.KafkaConnectionError('{} {}'.format(ret, errstr)))
                 return self.state
